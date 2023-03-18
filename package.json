@@ -1,0 +1,22 @@
+{
+  "name": "attributed_community_search",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@antv/g2plot": "^2.4.26",
+    "@antv/g6": "^4.8.7",
+    "axios": "^1.3.4",
+    "element-plus": "^2.3.0",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.0.0",
+    "vite": "^4.1.4"
+  }
+}
