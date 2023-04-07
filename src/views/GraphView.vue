@@ -51,7 +51,7 @@
                     <el-form-item label="Keywords" prop="keywords">
                         <el-input
                             v-model="ruleForm.keywords"
-                            placeholder="请输入关键词，关键词之间以 ; 分割"
+                            placeholder="请输入关键词，关键词之间以 , 分割"
                         />
                     </el-form-item>
                     <el-form-item>
@@ -344,7 +344,7 @@ onMounted(() => {
         },
     });
 
-    axios.get('graphData_lastfm.json')
+    axios.get('graphData.json')
         .then(data => {
             data = data.data
             data.nodes.forEach((node) => {
