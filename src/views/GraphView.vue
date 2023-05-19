@@ -87,7 +87,8 @@ const tooltip = new G6.Tooltip({
         outDiv.style.width = "150px";
         outDiv.style.wordBreak = "break-all";
         outDiv.innerHTML = `
-        <b>Label:</b><br>${e.item.getModel().id}<br>
+        <b>Label:</b> ${e.item.getModel().id}<br>
+        <b>CoreNum:</b> ${e.item.getModel().coreNum}<br>
         <b>Keywords:</b><br>{${e.item.getModel().keywords}}`;
         return outDiv;
     },
@@ -131,6 +132,11 @@ function fittingString(str, maxWidth, fontSize) {
 const globalFontSize = 12;
 
 // 上传成功回调函数
+function graphUploadSuccess_test(res) {
+    const data = res.data.graphData
+    console.log(data)
+}
+
 function graphUploadSuccess(res) {
     const container = document.getElementById('container');
     container.innerHTML = "";
@@ -342,6 +348,23 @@ const rules = reactive({
     coreK: [{validator: checkCoreK, trigger: 'blur'}],
     keywords: [{validator: checkKeywords, trigger: 'blur'}],
 });
+
+const submitForm_test = (formEI) => {
+    if (!formEI) return;
+    formEI.validate((valid) => {
+        if (valid) {
+            console.log('submit!');
+            axios.post('http://localhost:8080/graph/search', {
+                vertex: ruleForm.vertex,
+                coreK: ruleForm.coreK,
+                keywords: ruleForm.keywords
+            }).then(value => {
+                const data = value.data.data
+                console.log(data)
+            })
+        }
+    })
+}
 const submitForm = (formEl) => {
     if (!formEl) return;
     formEl.validate((valid) => {
@@ -375,7 +398,7 @@ const submitForm = (formEl) => {
                     nodes: []
                 }
                 for (let i = 1; i <= communityNum; i++) {
-                    legendData.nodes.push({"id": `${i}`, "label": `{${communityKeywords[i - 1]}}`});
+                    legendData.nodes.push({"id": `${i}`, "label": `${communityKeywords[i - 1]}`});
                 }
                 legendData.nodes.forEach(node => {
                     node.size = 15;
@@ -383,12 +406,12 @@ const submitForm = (formEl) => {
                 // 动态生成filter函数
                 const filterFC = {};
                 for (let i = 1; i <= communityNum; i++) {
-                    const cluster = `${i}`;
+                    const cluster = i;
                     filterFC[cluster] = (d) => {
                         if (d.id === queryVertex) {
                             return true;
                         }
-                        return d.cluster === cluster;
+                        return d.cluster.includes(cluster);
                     }
                 }
 
