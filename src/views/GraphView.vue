@@ -69,6 +69,7 @@ import G6 from '@antv/g6';
 import {WordCloud} from '@antv/g2plot';
 import {reactive, ref} from "vue";
 import axios from "axios";
+import {ElMessage} from "element-plus";
 
 // ---minimap插件设置---
 const minimap = new G6.Minimap({
@@ -362,6 +363,8 @@ const submitForm_test = (formEI) => {
                 const data = value.data.data
                 console.log(data)
             })
+
+
         }
     })
 }
@@ -369,12 +372,18 @@ const submitForm = (formEl) => {
     if (!formEl) return;
     formEl.validate((valid) => {
         if (valid) {
-            console.log('submit!');
             axios.post('http://localhost:8080/graph/search', {
                 vertex: ruleForm.vertex,
                 coreK: ruleForm.coreK,
                 keywords: ruleForm.keywords
             }).then(value => {
+                let code = value['data']['code']
+                if (code === 500){
+                    ElMessage.error(value['data']['msg'])
+                    return
+                }
+                let data = value['data']['data']
+
                 const container = document.getElementById('container');
                 container.innerHTML = "";
                 if (document.getElementById('description') === null) {
@@ -385,8 +394,6 @@ const submitForm = (formEl) => {
                 const descriptionDiv = document.getElementById('description');
                 descriptionDiv.innerHTML = `正在渲染搜索数据，请稍后......`;
 
-                let data = value.data.data
-                console.log(data)
 
                 const queryVertex = ruleForm.vertex;
                 const communityKeywords = data.communityKeywords;
@@ -591,6 +598,7 @@ const submitForm = (formEl) => {
                 graph.on('node:click', handleNodeClick);
 
             }).catch(reason => {
+                ElMessage.error(reason)
                 console.log(reason)
             })
         } else {
